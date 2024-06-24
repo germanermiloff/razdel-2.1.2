@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>История расчетов</title>
+    {% load django_bootstrap5 %}
+    {% bootstrap_css %}
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4 text-center">История расчетов</h1>
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">ИНН</th>
+                    <th scope="col">Доход за квартал</th>
+                    <th scope="col">Сумма исчисленного налога за квартал</th>
+                    <th scope="col">Страховые взносы</th>
+                    <th scope="col">Фактически уплаченная сумма торгового сбора</th>
+                    <th scope="col">Сумма уплаченного торгового сбора</th>
+                    <th scope="col">Год</th>
+                    <th scope="col">Ставка по налогу</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for proposal in proposals %}
+                <tr>
+                    <td>{{ proposal.INN }}</td>
+                    <td>{{ proposal.inc_per_quartal }}</td>
+                    <td>{{ proposal.tax_amount }}</td>
+                    <td>{{ proposal.ins_prem }}</td>
+                    <td>{{ proposal.trade_fee_paid }}</td>
+                    <td>{{ proposal.trade_fee }}</td>
+                    <td>{{ proposal.year.year_id }}</td>
+                    <td>{{ proposal.tax_rate.rate }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Пагинация -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="First">
+                        <span aria-hidden="true">&laquo; первая</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo; предыдущая</span>
+                    </a>
+                </li>
+                {% endif %}
+
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">
+                        Страница {{ page_obj.number }} из {{ paginator.num_pages }}
+                    </a>
+                </li>
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">следующая &raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ paginator.num_pages }}" aria-label="Last">
+                        <span aria-hidden="true">последняя &raquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+                
+            </ul>
+            <div class="text-center mt-3">
+                <a href="{% url 'calculator:index' %}" class="btn btn-primary">На главную</a>
+            </div>
+        </nav>
+    </div>
+</body>
+</html>
